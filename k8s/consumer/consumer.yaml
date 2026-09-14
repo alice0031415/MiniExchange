@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer
+  namespace: miniexchange
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consumer
+  template:
+    metadata:
+      labels:
+        app: consumer
+    spec:
+      containers:
+        - name: consumer
+          image: miniexchange-consumer:latest
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: grpc
+              containerPort: 5000
+            - name: health
+              containerPort: 5001
+
+          env:
+            - name: ConnectionStrings__DefaultConnection
+              value: "Host=postgres-consumer;Port=5432;Database=miniexchange_consumer;Username=miniexchange;Password=miniexchange"
+
+            - name: Kafka__BootstrapServers
+              valueFrom:
+                configMapKeyRef:
+                  name: miniexchange-config
+                  key: Kafka__BootstrapServers
+
+            - name: Kafka__Topic
+              valueFrom:
+                configMapKeyRef:
+                  name: miniexchange-config
+                  key: Kafka__Topic
+
+            - name: Kafka__DeadLetterTopic
+              valueFrom:
+                configMapKeyRef:
+                  name: miniexchange-config
+                  key: Kafka__DeadLetterTopic
+
+            - name: OpenTelemetry__OtlpEndpoint
+              valueFrom:
+                configMapKeyRef:
+                  name: miniexchange-config
+                  key: OpenTelemetry__OtlpEndpoint
+
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 5001
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 10
+
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 5001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: consumer
+  namespace: miniexchange
+spec:
+  selector:
+    app: consumer
+  ports:
+    - name: grpc
+      port: 5000
+      targetPort: 5000
+
+    - name: metrics
+      port: 5001
+      targetPort: 5001
+
+  type: ClusterIP

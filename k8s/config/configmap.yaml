@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: miniexchange-config
+  namespace: miniexchange
+data:
+  Kafka__BootstrapServers: "kafka:19092"
+  Kafka__Topic: "orders"
+  Kafka__DeadLetterTopic: "orders.dlq"
+  OpenTelemetry__OtlpEndpoint: "http://jaeger:4318/v1/traces"

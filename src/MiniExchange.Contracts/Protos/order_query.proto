@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+option csharp_namespace = "MiniExchange.Contracts.Grpc";
+
+package miniexchange.orderquery;
+
+service OrderQuery {
+  rpc GetOrders (GetOrdersRequest) returns (GetOrdersResponse);
+  rpc GetTrades (GetTradesRequest) returns (GetTradesResponse);
+}
+
+message GetOrdersRequest {
+  string instrument_id = 1;
+}
+
+message GetOrdersResponse {
+  repeated OrderDto orders = 1;
+}
+
+message OrderDto {
+  string order_id = 1;
+  string instrument_id = 2;
+  string side = 3;
+  double price = 4;
+  double quantity = 5;
+  double remaining_quantity = 6;
+  string status = 7;
+  string created_at = 8;
+}
+
+message GetTradesRequest {
+  string instrument_id = 1;
+}
+
+message GetTradesResponse {
+  repeated TradeDto trades = 1;
+}
+
+message TradeDto {
+  string trade_id = 1;
+  string instrument_id = 2;
+  string buy_order_id = 3;
+  string sell_order_id = 4;
+  double price = 5;
+  double quantity = 6;
+  string executed_at = 7;
+}

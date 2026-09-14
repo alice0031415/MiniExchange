@@ -1,0 +1,32 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+
+WORKDIR /src
+
+COPY NuGet.Docker.Config .
+
+COPY ["src/MiniExchange.ReadApi/MiniExchange.ReadApi.csproj", "src/MiniExchange.ReadApi/"]
+COPY ["src/MiniExchange.Contracts/MiniExchange.Contracts.csproj", "src/MiniExchange.Contracts/"]
+
+RUN dotnet restore \
+    "src/MiniExchange.ReadApi/MiniExchange.ReadApi.csproj" \
+    --configfile NuGet.Docker.Config
+
+COPY src/ src/
+
+RUN dotnet publish \
+    "src/MiniExchange.ReadApi/MiniExchange.ReadApi.csproj" \
+    -c Release \
+    -o /app/publish \
+    --no-restore
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+
+WORKDIR /app
+
+COPY --from=build /app/publish .
+
+EXPOSE 8080
+
+ENV ASPNETCORE_URLS=http://+:8080
+
+ENTRYPOINT ["dotnet", "MiniExchange.ReadApi.dll"]

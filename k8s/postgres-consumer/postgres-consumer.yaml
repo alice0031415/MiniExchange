@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-consumer
+  namespace: miniexchange
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-consumer
+  template:
+    metadata:
+      labels:
+        app: postgres-consumer
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:18
+          ports:
+            - containerPort: 5432
+
+          env:
+            - name: POSTGRES_USER
+              value: miniexchange
+
+            - name: POSTGRES_PASSWORD
+              value: miniexchange
+
+            - name: POSTGRES_DB
+              value: miniexchange_consumer
+
+          volumeMounts:
+            - name: postgres-consumer-data
+              mountPath: /var/lib/postgresql
+
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - miniexchange
+                - -d
+                - miniexchange_consumer
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 10
+
+      volumes:
+        - name: postgres-consumer-data
+          persistentVolumeClaim:
+            claimName: postgres-consumer-data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-consumer
+  namespace: miniexchange
+spec:
+  selector:
+    app: postgres-consumer
+  ports:
+    - port: 5432
+      targetPort: 5432
+  type: ClusterIP

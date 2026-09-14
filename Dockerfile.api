@@ -1,0 +1,35 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+
+WORKDIR /src
+
+COPY NuGet.Docker.Config .
+
+COPY ["src/MiniExchange.Api/MiniExchange.Api.csproj", "src/MiniExchange.Api/"]
+COPY ["src/MiniExchange.Application/MiniExchange.Application.csproj", "src/MiniExchange.Application/"]
+COPY ["src/MiniExchange.Contracts/MiniExchange.Contracts.csproj", "src/MiniExchange.Contracts/"]
+COPY ["src/MiniExchange.Domain/MiniExchange.Domain.csproj", "src/MiniExchange.Domain/"]
+COPY ["src/MiniExchange.Infrastructure/MiniExchange.Infrastructure.csproj", "src/MiniExchange.Infrastructure/"]
+
+RUN dotnet restore \
+    "src/MiniExchange.Api/MiniExchange.Api.csproj" \
+    --configfile NuGet.Docker.Config
+
+COPY src/ src/
+
+RUN dotnet publish \
+    "src/MiniExchange.Api/MiniExchange.Api.csproj" \
+    -c Release \
+    -o /app/publish \
+    --no-restore
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+
+WORKDIR /app
+
+COPY --from=build /app/publish .
+
+EXPOSE 8080
+
+ENV ASPNETCORE_URLS=http://+:8080
+
+ENTRYPOINT ["dotnet", "MiniExchange.Api.dll"]
