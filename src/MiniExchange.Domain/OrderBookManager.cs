@@ -40,7 +40,7 @@ public sealed class OrderBookManager
 
         return orderBook;
     }
-        public bool Remove(Guid instrumentId)
+    public bool Remove(Guid instrumentId)
     {
         return _books.Remove(instrumentId);
     }
