@@ -52,9 +52,6 @@ public sealed class ConsumerDbContext
 
             entity.Property(x => x.RemainingQuantity)
                 .HasPrecision(18, 4);
-            
-            entity.Property(x => x.StateVersion)
-                .IsRequired();
         });
 
         modelBuilder.Entity<TradeViewEntity>(entity =>

@@ -10,13 +10,20 @@ namespace MiniExchange.KafkaConsumer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-
+            migrationBuilder.DropColumn(
+                name: "StateVersion",
+                table: "OrderViews");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-
+            migrationBuilder.AddColumn<int>(
+                name: "StateVersion",
+                table: "OrderViews",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
         }
     }
 }

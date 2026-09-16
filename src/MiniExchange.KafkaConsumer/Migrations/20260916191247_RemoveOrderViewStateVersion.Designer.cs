@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MiniExchange.KafkaConsumer.Migrations
 {
     [DbContext(typeof(ConsumerDbContext))]
-    [Migration("20260910190116_RemoveOrderViewStateVersion")]
+    [Migration("20260916191247_RemoveOrderViewStateVersion")]
     partial class RemoveOrderViewStateVersion
     {
         /// <inheritdoc />
@@ -75,9 +75,6 @@ namespace MiniExchange.KafkaConsumer.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
-
-                    b.Property<int>("StateVersion")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Status")
                         .IsRequired()

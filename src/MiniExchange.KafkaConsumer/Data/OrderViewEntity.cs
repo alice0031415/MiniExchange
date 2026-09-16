@@ -16,7 +16,5 @@ public sealed class OrderViewEntity
 
     public string Status { get; set; } = null!;
 
-    public int StateVersion { get; set; }
-
     public DateTime CreatedAt { get; set; }
 }
