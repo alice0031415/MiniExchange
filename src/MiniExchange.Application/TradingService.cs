@@ -330,7 +330,7 @@ public sealed class TradingService : ITradingService
             await _unitOfWork.BeginTransactionAsync(
                 cancellationToken);
 
-        var order = await _orders.GetByIdAsync(
+        var order = await _orders.GetByIdForUpdateAsync(
             orderId,
             cancellationToken);
 

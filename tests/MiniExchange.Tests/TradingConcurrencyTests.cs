@@ -48,8 +48,7 @@ public class TradingConcurrencyTests
                 Quantity = 100m,
                 RemainingQuantity = 100m,
                 Status = (int)OrderStatus.Active,
-                CreatedAt = DateTime.UtcNow,
-                Version = 1
+                CreatedAt = DateTime.UtcNow
             });
 
             await db.SaveChangesAsync();

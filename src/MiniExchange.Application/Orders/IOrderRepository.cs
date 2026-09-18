@@ -29,4 +29,8 @@ public interface IOrderRepository
     Task<IReadOnlyList<Order>> GetActiveOrdersAsync(
     Guid instrumentId,
     CancellationToken cancellationToken);
+
+    Task<Order?> GetByIdForUpdateAsync(
+    Guid id,
+    CancellationToken cancellationToken);
 }

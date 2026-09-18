@@ -153,4 +153,23 @@ public sealed class OrderRepository : IOrderRepository
             .Select(OrderMapper.ToDomain)
             .ToList();
     }
+
+    public async Task<Order?> GetByIdForUpdateAsync(
+    Guid id,
+    CancellationToken cancellationToken)
+    {
+        var entity = await _db.Orders
+            .FromSqlInterpolated($"""
+            SELECT *
+            FROM "Orders"
+            WHERE "Id" = {id}
+            FOR UPDATE
+            """)
+            .AsNoTracking()
+            .SingleOrDefaultAsync(cancellationToken);
+
+        return entity is null
+            ? null
+            : OrderMapper.ToDomain(entity);
+    }
 }

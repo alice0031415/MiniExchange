@@ -16,8 +16,7 @@ public static class OrderMapper
             Quantity = order.Quantity,
             RemainingQuantity = order.RemainingQuantity,
             Status = (int)order.Status,
-            CreatedAt = order.CreatedAt,
-            Version = 1
+            CreatedAt = order.CreatedAt
         };
     }
 
