@@ -147,7 +147,7 @@ services:
       ConnectionStrings__Redis: redis:6379
 
       Kafka__BootstrapServers: kafka:19092
-      Kafka__OrdersTopic: orders
+      Kafka__Topic: orders
       Kafka__OutboxBatchSize: 100
       Kafka__OutboxPollIntervalMs: 1000
       OpenTelemetry__OtlpEndpoint: http://jaeger:4318/v1/traces

@@ -133,7 +133,7 @@ public sealed class OutboxPublisher : BackgroundService
 
         activity?.SetTag(
             "messaging.destination.name",
-            _options.OrdersTopic);
+            _options.Topic);
 
         activity?.SetTag(
             "messaging.operation.type",
@@ -167,7 +167,7 @@ public sealed class OutboxPublisher : BackgroundService
         try
         {
             await _producer.ProduceAsync(
-                _options.OrdersTopic,
+                _options.Topic,
                 new Message<string, string>
                 {
                     Key = message.Key,
@@ -189,7 +189,7 @@ public sealed class OutboxPublisher : BackgroundService
                 "Id={Id}, Type={Type}, Topic={Topic}, Key={Key}",
                 message.Id,
                 message.Type,
-                _options.OrdersTopic,
+                _options.Topic,
                 message.Key);
         }
         catch (Exception ex)
